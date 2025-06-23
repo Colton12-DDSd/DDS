@@ -24,7 +24,7 @@ type HorseData = {
 
 export default function HorseDetailPage() {
   const params = useParams()
-  const horseId = params.horse_id
+  const horseId = params.horse_id as string
 
   const [horseData, setHorseData] = useState<HorseData | null>(null)
   const [races, setRaces] = useState<Race[]>([])
@@ -49,18 +49,11 @@ export default function HorseDetailPage() {
         return
       }
 
-      const horse = horseRows[0]
+      const horse = horseRows[0] as Omit<HorseData, 'horse_id'>
 
       setHorseData({
-        horse_id: horseId as string,
-        horse_name: horse.horse_name,
-        bloodline: horse.bloodline,
-        generation: horse.generation,
-        gender: horse.gender,
-        rating: horse.rating,
-        speed_rating: horse.speed_rating,
-        sprint_rating: horse.sprint_rating,
-        endurance_rating: horse.endurance_rating,
+        horse_id: horseId,
+        ...horse
       })
 
       const { data: raceRows, error: raceError } = await supabase
