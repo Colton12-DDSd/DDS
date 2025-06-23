@@ -1,16 +1,11 @@
-// tailwind.config.js
+/** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    "./app/**/*.{js,ts,jsx,tsx,mdx}",
-    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx}", // ✅ for app directory
+    "./components/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {
-      colors: {
-        'nice-gray': '#2e2e2e',  // make sure this is here
-        'nice-white': '#ffffff'  // make sure this is here
-      },
-    },
+    extend: {},
   },
   plugins: [],
-};
+}
