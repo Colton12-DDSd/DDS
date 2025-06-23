@@ -49,17 +49,9 @@ export default function HorseDetailPage() {
         return
       }
 
-      const row = horseRows[0]
       setHorseData({
         horse_id: horseId,
-        horse_name: row.horse_name,
-        bloodline: row.bloodline,
-        generation: row.generation,
-        gender: row.gender,
-        rating: row.rating,
-        speed_rating: row.speed_rating,
-        sprint_rating: row.sprint_rating,
-        endurance_rating: row.endurance_rating
+        ...horseRows[0]
       })
 
       const { data: raceRows, error: raceError } = await supabase
