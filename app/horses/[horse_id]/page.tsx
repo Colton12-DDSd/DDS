@@ -50,7 +50,11 @@ export default function HorseDetailPage() {
         return
       }
 
-      setHorseData(horseRows[0])
+      setHorseData({
+        horse_id: horseId as string,
+        ...horseRows[0]
+      })
+
 
       // Fetch all races for horse
       const { data: raceRows, error: raceError } = await supabase
