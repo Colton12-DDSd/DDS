@@ -69,6 +69,7 @@ export default function Home() {
         type="text"
         placeholder="Type a horse name..."
         className="w-96 max-w-full p-2 border border-white rounded mb-4 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
+        onChange={(e) => setSearch(e.target.value)}  // 👈 this line makes it work again
       />
 
 
