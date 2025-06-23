@@ -39,7 +39,7 @@ export default function HorseDetailPage() {
 
       const { data: horseRows, error: horseError } = await supabase
         .from('race_results')
-        .select('horse_id, horse_name, bloodline, generation, gender, rating, speed_rating, sprint_rating, endurance_rating')
+        .select('horse_name, bloodline, generation, gender, rating, speed_rating, sprint_rating, endurance_rating')
         .eq('horse_id', horseId)
         .limit(1)
 
@@ -49,7 +49,18 @@ export default function HorseDetailPage() {
         return
       }
 
-      setHorseData(horseRows[0])
+      const row = horseRows[0]
+      setHorseData({
+        horse_id: horseId,
+        horse_name: row.horse_name,
+        bloodline: row.bloodline,
+        generation: row.generation,
+        gender: row.gender,
+        rating: row.rating,
+        speed_rating: row.speed_rating,
+        sprint_rating: row.sprint_rating,
+        endurance_rating: row.endurance_rating
+      })
 
       const { data: raceRows, error: raceError } = await supabase
         .from('race_results')
