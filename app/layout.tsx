@@ -1,9 +1,7 @@
-import type { ReactNode } from 'react'
-
-export default function RootLayout({ children }: { children: ReactNode }) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-nice-gray text-nice-white">
+      <body className="min-h-screen bg-gray-900 text-gray-100">
         {children}
       </body>
     </html>
