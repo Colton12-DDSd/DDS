@@ -68,10 +68,9 @@ export default function Home() {
       <input
         type="text"
         placeholder="Type a horse name..."
-        value={search}
-        onChange={(e) => setSearch(e.target.value)}
-        className="w-full p-2 border rounded mb-4 bg-gray-700 text-white placeholder-gray-300"
+        className="w-96 max-w-full p-2 border border-white rounded mb-4 bg-transparent text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-white"
       />
+
 
       {loading && <p>Loading...</p>}
 
