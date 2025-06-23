@@ -37,7 +37,6 @@ export default function HorseDetailPage() {
     async function fetchHorseDetails() {
       setLoading(true)
 
-      // Fetch horse basic info (take from first race record)
       const { data: horseRows, error: horseError } = await supabase
         .from('race_results')
         .select('horse_name, bloodline, generation, gender, rating, speed_rating, sprint_rating, endurance_rating')
@@ -50,13 +49,20 @@ export default function HorseDetailPage() {
         return
       }
 
+      const horse = horseRows[0]
+
       setHorseData({
         horse_id: horseId as string,
-        ...horseRows[0]
+        horse_name: horse.horse_name,
+        bloodline: horse.bloodline,
+        generation: horse.generation,
+        gender: horse.gender,
+        rating: horse.rating,
+        speed_rating: horse.speed_rating,
+        sprint_rating: horse.sprint_rating,
+        endurance_rating: horse.endurance_rating,
       })
 
-
-      // Fetch all races for horse
       const { data: raceRows, error: raceError } = await supabase
         .from('race_results')
         .select('race_id, finish_position, earnings')
@@ -69,7 +75,6 @@ export default function HorseDetailPage() {
       }
 
       setRaces(raceRows)
-
       setLoading(false)
       setError(null)
     }
@@ -77,7 +82,6 @@ export default function HorseDetailPage() {
     fetchHorseDetails()
   }, [horseId])
 
-  // Calculate average finish position, win %, total earnings
   const averageFinishPosition =
     races.length > 0
       ? (races.reduce((sum, r) => sum + r.finish_position, 0) / races.length).toFixed(2)
