@@ -20,39 +20,13 @@ export default function Augments() {
     setLoading(true)
 
     supabase
-      .from('race_results')
-      .select(`
-        cpu_augment,
-        ram_augment,
-        hydraulic_augment,
-        count(*) as races,
-        sum(CASE WHEN finish_position = 1 THEN 1 ELSE 0 END) as wins
-      `)
-      .group('cpu_augment, ram_augment, hydraulic_augment')
+      .rpc('get_augment_win_rates')
       .then(({ data, error }) => {
         if (error) {
           console.error('Error fetching augment stats:', error)
           setResults([])
-        } else if (data) {
-          // Calculate win percentage and cast numeric strings to numbers
-          const augments = data.map((row: any) => {
-            const races = Number(row.races)
-            const wins = Number(row.wins)
-            const win_pct = races > 0 ? (wins / races) * 100 : 0
-            return {
-              cpu_augment: row.cpu_augment,
-              ram_augment: row.ram_augment,
-              hydraulic_augment: row.hydraulic_augment,
-              races,
-              wins,
-              win_pct,
-            }
-          })
-
-          // Sort descending by win_pct
-          augments.sort((a: AugmentStat, b: AugmentStat) => b.win_pct - a.win_pct)
-
-          setResults(augments)
+        } else {
+          setResults(data || [])
         }
         setLoading(false)
       })
