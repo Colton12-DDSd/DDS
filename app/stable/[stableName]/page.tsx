@@ -7,8 +7,11 @@ import { supabase } from '../../../lib/supabaseClient'
 
 export default function StableDetail() {
   const params = useParams()
-  const stableNameEncoded = params.stableName || ''
-  // Decode URL encoded stable name
+  // If it's an array, join with '/', otherwise use the string
+  const stableNameEncoded = Array.isArray(params.stableName)
+    ? params.stableName.join('/')
+    : params.stableName || ''
+
   const stableName = decodeURIComponent(stableNameEncoded)
 
   const [horses, setHorses] = useState<any[]>([])
