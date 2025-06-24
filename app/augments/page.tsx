@@ -15,9 +15,12 @@ export default function Augments() {
   useEffect(() => {
     supabase
       .from('race_results')
-      .select('bloodline', { distinct: true })
+      .select('bloodline')
       .then(({ data }) => {
-        if (data) setBloodlines(data.map(row => row.bloodline).filter(Boolean))
+        if (data) {
+          const uniqueBloodlines = Array.from(new Set(data.map(row => row.bloodline).filter(Boolean)));
+          setBloodlines(uniqueBloodlines);
+        }
       })
   }, [])
 
@@ -64,21 +67,27 @@ export default function Augments() {
         <input
           type="number"
           min={0}
-          max={5}
+          max={maxRating}
           step={0.1}
           value={minRating}
-          onChange={e => setMinRating(parseFloat(e.target.value))}
+          onChange={e => {
+            const val = parseFloat(e.target.value)
+            if (val <= maxRating) setMinRating(val)
+          }}
           placeholder="Min Rating"
           className="border p-2 rounded w-24"
         />
 
         <input
           type="number"
-          min={0}
+          min={minRating}
           max={5}
           step={0.1}
           value={maxRating}
-          onChange={e => setMaxRating(parseFloat(e.target.value))}
+          onChange={e => {
+            const val = parseFloat(e.target.value)
+            if (val >= minRating) setMaxRating(val)
+          }}
           placeholder="Max Rating"
           className="border p-2 rounded w-24"
         />
