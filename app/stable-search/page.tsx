@@ -54,7 +54,7 @@ export default function StableSearch() {
       <ul>
         {stables.map((stable) => (
           <li key={stable} className="p-2 border-b">
-            <Link href={`/stable/${encodeURIComponent(stable)}`} className="text-white no-underline hover:underline">
+            <Link href={`/stable/${encodeURIComponent(stable)}`}>
               {stable}
             </Link>
           </li>
