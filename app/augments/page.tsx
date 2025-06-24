@@ -10,21 +10,6 @@ export default function Augments() {
   const [bloodlines, setBloodlines] = useState<string[]>(['All'])
   const [loading, setLoading] = useState(false)
 
-  return (
-    <div className="p-8 max-w-4xl mx-auto">
-      <Link href="/">
-        <button className="mb-6 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
-          ← Back to Home
-        </button>
-      </Link>
-
-      <h1 className="text-3xl mb-6 font-bold">Best Augments by Bloodline</h1>
-
-      {/* ... rest of your component ... */}
-    </div>
-  )
-}
-
   // Load distinct bloodlines on component mount
   useEffect(() => {
     supabase.rpc('get_distinct_bloodlines').then(({ data, error }) => {
@@ -59,6 +44,12 @@ export default function Augments() {
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
+      <Link href="/">
+        <button className="mb-6 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded">
+          ← Back to Home
+        </button>
+      </Link>
+
       <h1 className="text-3xl mb-6 font-bold">Best Augments by Bloodline</h1>
 
       <select
@@ -105,7 +96,6 @@ export default function Augments() {
           </tbody>
         </table>
       )}
-
     </div>
   )
 }
