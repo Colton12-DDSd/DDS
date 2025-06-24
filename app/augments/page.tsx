@@ -62,23 +62,23 @@ export default function Augments() {
       {!loading && results.length === 0 && <p>No data found for selected filters.</p>}
 
       {!loading && results.length > 0 && (
-        <table className="w-full border-collapse border border-gray-700 text-sm">
+        <table className="border-collapse border border-gray-700 text-sm table-auto mx-auto">
           <thead>
             <tr>
-              <th className="border border-gray-700 p-2">CPU Augment</th>
-              <th className="border border-gray-700 p-2">RAM Augment</th>
-              <th className="border border-gray-700 p-2">Hydraulic Augment</th>
-              <th className="border border-gray-700 p-2">Races</th>
-              <th className="border border-gray-700 p-2">Wins</th>
-              <th className="border border-gray-700 p-2">Win %</th>
+              <th className="border border-gray-700 p-2 whitespace-nowrap max-w-xs truncate">CPU Augment</th>
+              <th className="border border-gray-700 p-2 whitespace-nowrap max-w-xs truncate">RAM Augment</th>
+              <th className="border border-gray-700 p-2 whitespace-nowrap max-w-xs truncate">Hydraulic Augment</th>
+              <th className="border border-gray-700 p-2 whitespace-nowrap">Races</th>
+              <th className="border border-gray-700 p-2 whitespace-nowrap">Wins</th>
+              <th className="border border-gray-700 p-2 whitespace-nowrap">Win %</th>
             </tr>
           </thead>
           <tbody>
             {results.map((r, i) => (
               <tr key={i} className="border border-gray-700">
-                <td className="border border-gray-700 p-2">{r.cpu_augment}</td>
-                <td className="border border-gray-700 p-2">{r.ram_augment}</td>
-                <td className="border border-gray-700 p-2">{r.hydraulic_augment}</td>
+                <td className="border border-gray-700 p-2 max-w-xs truncate">{r.cpu_augment}</td>
+                <td className="border border-gray-700 p-2 max-w-xs truncate">{r.ram_augment}</td>
+                <td className="border border-gray-700 p-2 max-w-xs truncate">{r.hydraulic_augment}</td>
                 <td className="border border-gray-700 p-2">{r.races}</td>
                 <td className="border border-gray-700 p-2">{r.wins}</td>
                 <td className="border border-gray-700 p-2">
@@ -89,6 +89,7 @@ export default function Augments() {
           </tbody>
         </table>
       )}
+
     </div>
   )
 }
