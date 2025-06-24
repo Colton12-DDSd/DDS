@@ -4,32 +4,36 @@ import { useState, useEffect } from 'react'
 import { supabase } from '../../lib/supabaseClient'
 
 export default function Augments() {
-  const [bloodline, setBloodline] = useState<string>('All')
-  const [bloodlines, setBloodlines] = useState<string[]>([])
+  const [bloodline, setBloodline] = useState('All')
   const [results, setResults] = useState<any[]>([])
+  const [bloodlines, setBloodlines] = useState<string[]>(['All'])
   const [loading, setLoading] = useState(false)
 
-  // Load distinct bloodlines on mount
+  // Load distinct bloodlines using RPC on mount
   useEffect(() => {
-    supabase
-      .from('race_results')
-      .select('bloodline', { distinct: true })
-      .then(({ data }) => {
-        if (data) {
-          const unique = data.map(row => row.bloodline).filter(Boolean)
-          setBloodlines(['All', ...unique])
-        }
-      })
+    supabase.rpc('get_distinct_bloodlines').then(({ data, error }) => {
+      if (error) {
+        console.error('Error loading bloodlines:', error)
+        return
+      }
+      if (data) {
+        setBloodlines(['All', ...data.map((row: any) => row.bloodline)])
+      }
+    })
   }, [])
 
   // Fetch augment stats on bloodline change
   useEffect(() => {
     setLoading(true)
+    let rpcCall
 
-    // Pass null to RPC if 'All' selected, else pass selected bloodline
-    const filter = bloodline === 'All' ? null : bloodline
+    if (bloodline === 'All') {
+      rpcCall = supabase.rpc('get_augment_win_rates')
+    } else {
+      rpcCall = supabase.rpc('get_augment_win_rates_filtered', { in_bloodline: bloodline })
+    }
 
-    supabase.rpc('get_augment_win_rates', { bloodline_filter: filter }).then(({ data, error }) => {
+    rpcCall.then(({ data, error }) => {
       if (error) {
         console.error('Error fetching augment stats:', error)
         setResults([])
@@ -42,26 +46,22 @@ export default function Augments() {
 
   return (
     <div className="p-8 max-w-4xl mx-auto">
-      <h1 className="text-3xl mb-6 font-bold">Best Augments by Bloodline & Rating</h1>
+      <h1 className="text-3xl mb-6 font-bold">Best Augments by Bloodline</h1>
 
-      <div className="mb-6">
-        <label className="mr-2 font-semibold" htmlFor="bloodline-select">Filter by Bloodline:</label>
-        <select
-          id="bloodline-select"
-          value={bloodline}
-          onChange={e => setBloodline(e.target.value)}
-          className="border p-2 rounded"
-        >
-          {bloodlines.map(bl => (
-            <option key={bl} value={bl}>{bl}</option>
-          ))}
-        </select>
-      </div>
+      <select
+        value={bloodline}
+        onChange={e => setBloodline(e.target.value)}
+        className="border p-2 rounded mb-6"
+      >
+        {bloodlines.map(bl => (
+          <option key={bl} value={bl}>{bl}</option>
+        ))}
+      </select>
 
       {loading && <p>Loading...</p>}
 
       {!loading && results.length === 0 && (
-        <p>No augment data found for selected bloodline.</p>
+        <p>No data found for selected filters.</p>
       )}
 
       {!loading && results.length > 0 && (
