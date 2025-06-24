@@ -3,11 +3,33 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { supabase } from '../../../lib/supabaseClient'
+import { Line } from 'react-chartjs-2'
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+} from 'chart.js'
+
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend
+)
 
 type Race = {
   race_id: string
   finish_position: number
   earnings: number
+  finish_time: number // make sure this is numeric in your DB
 }
 
 type HorseData = {
@@ -51,13 +73,14 @@ export default function HorseDetailPage() {
 
       setHorseData({
         horse_id: horseId,
-        ...horseRows[0]
+        ...horseRows[0],
       })
 
       const { data: raceRows, error: raceError } = await supabase
         .from('race_results')
-        .select('race_id, finish_position, earnings')
+        .select('race_id, finish_position, earnings, finish_time, race_date')
         .eq('horse_id', horseId)
+        .order('race_date', { ascending: true })
 
       if (raceError || !raceRows) {
         setError('Failed to load race history.')
@@ -65,7 +88,13 @@ export default function HorseDetailPage() {
         return
       }
 
-      setRaces(raceRows)
+      // Parse finish_time to number if necessary
+      const parsedRaces = raceRows.map((r) => ({
+        ...r,
+        finish_time: typeof r.finish_time === 'string' ? parseFloat(r.finish_time) : r.finish_time,
+      }))
+
+      setRaces(parsedRaces)
       setLoading(false)
       setError(null)
     }
@@ -78,11 +107,52 @@ export default function HorseDetailPage() {
       ? (races.reduce((sum, r) => sum + r.finish_position, 0) / races.length).toFixed(2)
       : '-'
 
-  const winCount = races.filter(r => r.finish_position === 1).length
+  const winCount = races.filter((r) => r.finish_position === 1).length
   const winPercentage = races.length > 0 ? ((winCount / races.length) * 100).toFixed(2) + '%' : '-'
 
-  const totalEarnings =
-    races.length > 0 ? races.reduce((sum, r) => sum + r.earnings, 0).toFixed(2) : '-'
+  const totalEarnings = races.length > 0 ? races.reduce((sum, r) => sum + r.earnings, 0).toFixed(2) : '-'
+
+  // Chart.js data and options
+  const chartData = {
+    labels: races.map((r, i) => `Race ${i + 1}`),
+    datasets: [
+      {
+        label: 'Finish Time (seconds)',
+        data: races.map((r) => r.finish_time),
+        fill: false,
+        borderColor: 'rgb(75, 192, 192)',
+        tension: 0.1,
+      },
+    ],
+  }
+
+  const options = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top' as const,
+      },
+      title: {
+        display: true,
+        text: 'Finish Times Over Races',
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: false,
+        title: {
+          display: true,
+          text: 'Finish Time (seconds)',
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: 'Race Order',
+        },
+      },
+    },
+  }
 
   if (loading) return <p className="p-4">Loading horse details...</p>
   if (error) return <p className="p-4 text-red-600">{error}</p>
@@ -95,24 +165,51 @@ export default function HorseDetailPage() {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Profile Summary</h2>
         <div className="grid grid-cols-2 gap-4 text-lg">
-          <div><strong>Bloodline:</strong> {horseData.bloodline}</div>
-          <div><strong>Generation:</strong> {horseData.generation}</div>
-          <div><strong>Gender:</strong> {horseData.gender}</div>
-          <div><strong>Overall Rating:</strong> {horseData.rating}</div>
-          <div><strong>Speed Rating:</strong> {horseData.speed_rating}</div>
-          <div><strong>Sprint Rating:</strong> {horseData.sprint_rating}</div>
-          <div><strong>Endurance Rating:</strong> {horseData.endurance_rating}</div>
+          <div>
+            <strong>Bloodline:</strong> {horseData.bloodline}
+          </div>
+          <div>
+            <strong>Generation:</strong> {horseData.generation}
+          </div>
+          <div>
+            <strong>Gender:</strong> {horseData.gender}
+          </div>
+          <div>
+            <strong>Overall Rating:</strong> {horseData.rating}
+          </div>
+          <div>
+            <strong>Speed Rating:</strong> {horseData.speed_rating}
+          </div>
+          <div>
+            <strong>Sprint Rating:</strong> {horseData.sprint_rating}
+          </div>
+          <div>
+            <strong>Endurance Rating:</strong> {horseData.endurance_rating}
+          </div>
         </div>
       </section>
 
       <section>
         <h2 className="text-2xl font-semibold mb-4">Current Stats</h2>
         <div className="grid grid-cols-3 gap-4 text-lg">
-          <div><strong>Average Finish Position:</strong> {averageFinishPosition}</div>
-          <div><strong>Win Percentage:</strong> {winPercentage}</div>
-          <div><strong>Total Earnings:</strong> ${totalEarnings}</div>
+          <div>
+            <strong>Average Finish Position:</strong> {averageFinishPosition}
+          </div>
+          <div>
+            <strong>Win Percentage:</strong> {winPercentage}
+          </div>
+          <div>
+            <strong>Total Earnings:</strong> ${totalEarnings}
+          </div>
         </div>
       </section>
+
+      {races.length > 0 && (
+        <section className="mt-8">
+          <h2 className="text-2xl font-semibold mb-4">Finish Time Over Races</h2>
+          <Line data={chartData} options={options} />
+        </section>
+      )}
     </main>
   )
 }
