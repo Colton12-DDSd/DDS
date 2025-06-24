@@ -6,7 +6,11 @@ import Link from 'next/link'
 import { supabase } from '../../../lib/supabaseClient'
 
 export default function StableDetail() {
-  const { stableName } = useParams()
+  const params = useParams()
+  const stableNameEncoded = params.stableName || ''
+  // Decode URL encoded stable name
+  const stableName = decodeURIComponent(stableNameEncoded)
+
   const [horses, setHorses] = useState<any[]>([])
   const [loading, setLoading] = useState(false)
 
