@@ -1,11 +1,9 @@
-import './globals.css' // or '../styles/globals.css' if it's in a styles folder
+import './globals.css'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body>
-        {children}
-      </body>
+    <html lang="en" className="dark">
+      <body>{children}</body>
     </html>
   )
 }
