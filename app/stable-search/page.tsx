@@ -26,7 +26,6 @@ export default function StableSearch() {
           console.error('Error searching stables:', error)
           setStables([])
         } else if (data) {
-          // Get unique stable names
           const uniqueStables = Array.from(new Set(data.map(s => s.stable_name))).filter(Boolean)
           setStables(uniqueStables)
         }
@@ -55,11 +54,7 @@ export default function StableSearch() {
       <ul>
         {stables.map((stable) => (
           <li key={stable} className="p-2 border-b">
-            <Link href={`/stable/${encodeURIComponent(stableName)}`} className="text-white no-underline hover:underline">
-              {stableName}
-            </Link>
-
-            </Link>
+            <Link href={`/stable/${encodeURIComponent(stable)}`} className="text-white no-underline hover:underline">
               {stable}
             </Link>
           </li>
