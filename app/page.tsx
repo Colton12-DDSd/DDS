@@ -15,6 +15,11 @@ export default function Home() {
             View Augments
           </button>
         </Link>
+        <Link href="/stable-search">
+          <button className="px-6 py-3 bg-purple-600 text-white rounded hover:bg-purple-700 transition">
+            Search Stables
+          </button>
+        </Link>
       </div>
     </main>
   )
