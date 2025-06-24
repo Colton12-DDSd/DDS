@@ -30,6 +30,7 @@ type Race = {
   finish_position: number
   earnings: number
   finish_time: number // make sure this is numeric in your DB
+  race_date?: string // optional for ordering
 }
 
 type HorseData = {
@@ -102,6 +103,28 @@ export default function HorseDetailPage() {
     fetchHorseDetails()
   }, [horseId])
 
+  // Helper for linear regression (y = slope * x + intercept)
+  function linearRegression(y: number[], x: number[]) {
+    const n = y.length
+    const sum_x = x.reduce((a, b) => a + b, 0)
+    const sum_y = y.reduce((a, b) => a + b, 0)
+    const sum_xy = x.reduce((sum, xi, i) => sum + xi * y[i], 0)
+    const sum_xx = x.reduce((sum, xi) => sum + xi * xi, 0)
+
+    const slope = (n * sum_xy - sum_x * sum_y) / (n * sum_xx - sum_x * sum_x)
+    const intercept = (sum_y - slope * sum_x) / n
+
+    return { slope, intercept }
+  }
+
+  const xData = races.map((_, i) => i) // 0-based race indices
+  const yData = races.map((r) => r.finish_time)
+
+  const { slope, intercept } = linearRegression(yData, xData)
+
+  // Calculate trendline finish times for each race index
+  const trendlineData = xData.map((x) => slope * x + intercept)
+
   const averageFinishPosition =
     races.length > 0
       ? (races.reduce((sum, r) => sum + r.finish_position, 0) / races.length).toFixed(2)
@@ -112,16 +135,24 @@ export default function HorseDetailPage() {
 
   const totalEarnings = races.length > 0 ? races.reduce((sum, r) => sum + r.earnings, 0).toFixed(2) : '-'
 
-  // Chart.js data and options
   const chartData = {
     labels: races.map((r, i) => `Race ${i + 1}`),
     datasets: [
       {
         label: 'Finish Time (seconds)',
-        data: races.map((r) => r.finish_time),
+        data: yData,
         fill: false,
         borderColor: 'rgb(75, 192, 192)',
         tension: 0.1,
+      },
+      {
+        label: 'Trendline',
+        data: trendlineData,
+        fill: false,
+        borderColor: 'rgba(255, 99, 132, 0.8)',
+        borderDash: [5, 5],
+        pointRadius: 0,
+        tension: 0,
       },
     ],
   }
