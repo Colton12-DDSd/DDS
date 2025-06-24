@@ -57,34 +57,34 @@ export default function StableDetail() {
       )}
 
       {!loading && horses.length > 0 && (
-        <table className="w-full border-collapse border border-gray-700 text-sm table-auto mx-auto">
-          <thead>
-            <tr>
-              <th className="border border-gray-700 p-2 whitespace-nowrap">Horse Name</th>
-              <th className="border border-gray-700 p-2 whitespace-nowrap">Bloodline</th>
-              <th className="border border-gray-700 p-2 whitespace-nowrap">Generation</th>
-              <th className="border border-gray-700 p-2 whitespace-nowrap">Rating</th>
-              <th className="border border-gray-700 p-2 whitespace-nowrap">Earnings</th>
-            </tr>
-          </thead>
-          <tbody>
-            {horses.map((h) => (
-              <tr key={h.horse_id} className="border border-gray-700">
-                <td className="border border-gray-700 p-2 whitespace-nowrap max-w-xs overflow-hidden truncate">
-                  <Link href={`/horses/${h.horse_id}`} className="text-white no-underline hover:underline">
-                    {h.horse_name}
-                  </Link>
-                </td>
-                <td className="border border-gray-700 p-2 whitespace-nowrap max-w-xs overflow-hidden truncate">{h.bloodline}</td>
-                <td className="border border-gray-700 p-2 whitespace-nowrap">{h.generation}</td>
-                <td className="border border-gray-700 p-2 whitespace-nowrap">{h.rating}</td>
-                <td className="border border-gray-700 p-2 whitespace-nowrap">${Number(h.earnings).toFixed(2)}</td>
+        <div className="overflow-auto max-w-full mx-auto">
+          <table className="table-auto border-collapse border border-gray-700 text-sm max-w-max mx-auto">
+            <thead>
+              <tr>
+                <th className="border border-gray-700 px-3 py-2 whitespace-nowrap">Horse Name</th>
+                <th className="border border-gray-700 px-3 py-2 whitespace-nowrap">Bloodline</th>
+                <th className="border border-gray-700 px-3 py-2 whitespace-nowrap">Generation</th>
+                <th className="border border-gray-700 px-3 py-2 whitespace-nowrap">Rating</th>
+                <th className="border border-gray-700 px-3 py-2 whitespace-nowrap">Earnings</th>
               </tr>
-            ))}
-          </tbody>
-
-        </table>
-
+            </thead>
+            <tbody>
+              {horses.map((h) => (
+                <tr key={h.horse_id} className="border border-gray-700">
+                  <td className="border border-gray-700 px-3 py-2 whitespace-nowrap max-w-xs overflow-hidden truncate">
+                    <Link href={`/horses/${h.horse_id}`} className="text-white no-underline hover:underline">
+                      {h.horse_name}
+                    </Link>
+                  </td>
+                  <td className="border border-gray-700 px-3 py-2 whitespace-nowrap max-w-xs overflow-hidden truncate">{h.bloodline}</td>
+                  <td className="border border-gray-700 px-3 py-2 whitespace-nowrap">{h.generation}</td>
+                  <td className="border border-gray-700 px-3 py-2 whitespace-nowrap">{h.rating}</td>
+                  <td className="border border-gray-700 px-3 py-2 whitespace-nowrap">${Number(h.earnings).toFixed(2)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   )
