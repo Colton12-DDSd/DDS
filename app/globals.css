@@ -3,14 +3,6 @@
 @tailwind components;
 @tailwind utilities;
 
-a {
-  @apply text-white no-underline;
-}
-
-a:hover {
-  @apply underline;
-}
-
 html, body {
   background-color: #111 !important;
   color: #eee !important;
