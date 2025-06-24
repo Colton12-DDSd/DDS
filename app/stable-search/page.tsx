@@ -42,8 +42,9 @@ export default function StableSearch() {
         placeholder="Type stable name..."
         value={search}
         onChange={e => setSearch(e.target.value)}
-        className="w-full p-2 border border-gray-700 rounded mb-4"
+        className="w-80 max-w-full p-2 border border-gray-700 rounded mb-4 mx-auto block"
       />
+
 
       {loading && <p>Loading...</p>}
 
