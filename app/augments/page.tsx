@@ -9,7 +9,7 @@ export default function Augments() {
   const [bloodlines, setBloodlines] = useState<string[]>(['All'])
   const [loading, setLoading] = useState(false)
 
-  // Load distinct bloodlines using RPC on mount
+  // Load distinct bloodlines on component mount
   useEffect(() => {
     supabase.rpc('get_distinct_bloodlines').then(({ data, error }) => {
       if (error) {
@@ -22,16 +22,13 @@ export default function Augments() {
     })
   }, [])
 
-  // Fetch augment stats on bloodline change
+  // Fetch augment stats whenever selected bloodline changes
   useEffect(() => {
     setLoading(true)
-    let rpcCall
-
-    if (bloodline === 'All') {
-      rpcCall = supabase.rpc('get_augment_win_rates')
-    } else {
-      rpcCall = supabase.rpc('get_augment_win_rates_filtered', { in_bloodline: bloodline })
-    }
+    const rpcCall =
+      bloodline === 'All'
+        ? supabase.rpc('get_augment_win_rates')
+        : supabase.rpc('get_augment_win_rates_filtered', { in_bloodline: bloodline })
 
     rpcCall.then(({ data, error }) => {
       if (error) {
@@ -54,15 +51,15 @@ export default function Augments() {
         className="border p-2 rounded mb-6"
       >
         {bloodlines.map(bl => (
-          <option key={bl} value={bl}>{bl}</option>
+          <option key={bl} value={bl}>
+            {bl}
+          </option>
         ))}
       </select>
 
       {loading && <p>Loading...</p>}
 
-      {!loading && results.length === 0 && (
-        <p>No data found for selected filters.</p>
-      )}
+      {!loading && results.length === 0 && <p>No data found for selected filters.</p>}
 
       {!loading && results.length > 0 && (
         <table className="w-full border-collapse border border-gray-700 text-sm">
@@ -84,7 +81,9 @@ export default function Augments() {
                 <td className="border border-gray-700 p-2">{r.hydraulic_augment}</td>
                 <td className="border border-gray-700 p-2">{r.races}</td>
                 <td className="border border-gray-700 p-2">{r.wins}</td>
-                <td className="border border-gray-700 p-2">{r.win_pct.toFixed(2)}%</td>
+                <td className="border border-gray-700 p-2">
+                  {typeof r.win_pct === 'number' ? r.win_pct.toFixed(2) : 'N/A'}%
+                </td>
               </tr>
             ))}
           </tbody>
