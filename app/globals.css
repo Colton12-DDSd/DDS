@@ -7,3 +7,11 @@ html, body {
   background-color: #111 !important;
   color: #eee !important;
 }
+
+a {
+  @apply text-white no-underline;
+}
+
+a:hover {
+  @apply underline;
+}
