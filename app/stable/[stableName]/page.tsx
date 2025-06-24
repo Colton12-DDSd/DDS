@@ -60,27 +60,26 @@ export default function StableDetail() {
         <table className="w-full border-collapse border border-gray-700 text-sm table-auto mx-auto">
           <thead>
             <tr>
-              <th className="border border-gray-700 p-2">Horse Name</th>
-              <th className="border border-gray-700 p-2">Bloodline</th>
-              <th className="border border-gray-700 p-2">Generation</th>
-              <th className="border border-gray-700 p-2">Rating</th>
-              <th className="border border-gray-700 p-2">Earnings</th>
+              <th className="border border-gray-700 p-2 whitespace-normal max-w-xs">Horse Name</th>
+              <th className="border border-gray-700 p-2 whitespace-normal max-w-xs">Bloodline</th>
+              <th className="border border-gray-700 p-2 whitespace-normal max-w-xs">Generation</th>
+              <th className="border border-gray-700 p-2 whitespace-normal max-w-xs">Rating</th>
+              <th className="border border-gray-700 p-2 whitespace-normal max-w-xs">Earnings</th>
             </tr>
           </thead>
           <tbody>
             {horses.map((h) => (
               <tr key={h.horse_id} className="border border-gray-700">
-                <td className="border border-gray-700 p-2">
-                  <Link href={`/horses/${h.horse_id}`}>{h.horse_name}</Link>
-                </td>
-                <td className="border border-gray-700 p-2">{h.bloodline}</td>
-                <td className="border border-gray-700 p-2">{h.generation}</td>
-                <td className="border border-gray-700 p-2">{h.rating}</td>
-                <td className="border border-gray-700 p-2">${Number(h.earnings).toFixed(2)}</td>
+                <td className="border border-gray-700 p-2 whitespace-normal max-w-xs">{h.horse_name}</td>
+                <td className="border border-gray-700 p-2 whitespace-normal max-w-xs">{h.bloodline}</td>
+                <td className="border border-gray-700 p-2 whitespace-normal max-w-xs">{h.generation}</td>
+                <td className="border border-gray-700 p-2 whitespace-normal max-w-xs">{h.rating}</td>
+                <td className="border border-gray-700 p-2 whitespace-normal max-w-xs">${Number(h.earnings).toFixed(2)}</td>
               </tr>
             ))}
           </tbody>
         </table>
+
       )}
     </div>
   )
